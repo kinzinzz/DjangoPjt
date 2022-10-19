@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>제목: {{ article.title }}</h2>
+<p>{{ article.content }}</p>
+<p>작성일: {{ article.created_at }}</p>
+<p>마지막 수정일: {{ article.update_at }}</p>
+
+<a href="{% url 'articles:update' article.pk %}">수정</a>
+<a href="{% url 'articles:delete' article.pk %}">삭제</a>
+<a href="{% url 'articles:index' %}">처음으로</a>
+{% endblock %}

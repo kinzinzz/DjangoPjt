@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load django_bootstrap5 %}
+<div class="container">
+    <h3>{{ user }}님의 작성한 게시글은 {{ user.articles.all|length }}개</h3>
+    <table class="table text-center">
+        <thead>
+            <tr>
+                <th scope="col">작성글</th>
+        </thead>
+        <tbody>
+            {% for article in user.articles.all %}
+            <tr>
+                <td><a href="{% url 'articles:detail' article.pk %}">{{ article.title }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h3>{{ user }}님이 작성한 댓글은 {{ user.comments.all|length }}개</h3>
+    <table class="table text-center">
+        <thead>
+            <tr>
+
+                <th scope="col">댓글 내용</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for comment in user.comments.all %}
+            <tr>
+                <td>{{ comment.content }} </td>
+
+                {% empty %}
+                <td>{{ user.username }}님이 작성한 댓글이 없습니다.</td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'articles:create' %}">{% bootstrap_button button_type="submit" content="글작성" %}</a>
+</div>
+{% endblock %}

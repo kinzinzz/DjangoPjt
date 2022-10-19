@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load django_bootstrap5 %}
+<div class="container">
+    <h1>제목: {{ article.title }}</h1>
+    <hr>
+    <p>{{ article.content}}</p>
+    <hr>
+
+</div>
+<div class="container">
+    <h1>댓글</h1>
+    {% for comment in article.comments.all %}
+    <div class="comment d-flex justify-content-between">
+        <div class="d-flex">
+            <p>{{ comment.content }} &nbsp&nbsp<span>작성자:{{ comment.user }}&nbsp작성시간:{{ comment.created_date }}</span>
+            </p>
+        </div>
+        <div>
+            <a href="{% url 'articles:delete_comment' article.pk  comment.pk %}">
+                {% bootstrap_button button_type="submit" content="댓글삭제" %}
+            </a>
+        </div>
+
+    </div>
+
+    {% empty %}
+    <div>
+        <p>댓글이 아직 없습니다.</p>
+    </div>
+    {% endfor %}
+    <hr>
+    <div class="d-flex justify-content-end comment_menu ">
+        <div>
+            <a href="{% url 'articles:add_comment' article.pk %}" class="mx-1">
+                {% bootstrap_button button_type="submit" content="댓글작성" %}
+            </a>
+        </div>
+        <div>
+            <a href="{% url 'articles:index' %}">
+                {% bootstrap_button button_type="submit" content="홈페이지" %}
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

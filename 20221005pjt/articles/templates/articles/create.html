@@ -1,0 +1,12 @@
+{% extends 'base.html'%}
+
+{% block content %}
+<form action="" method="POST">
+    {% csrf_token %}
+    <div class="container d-flex flex-column justify-content-center align-items-center mt-5">
+        <p>{{ article_form.title }}</p>
+        <p>{{ article_form.content }}</p>
+        <input type="submit" value="작성완료">
+    </div>
+</form>
+{% endblock %}

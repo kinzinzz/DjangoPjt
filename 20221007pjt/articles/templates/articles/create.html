@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load django_bootstrap5 %}
+<div class="container">
+    <form action="" method="POSt">
+        {% csrf_token %}
+
+        {% bootstrap_form review_form %}
+        <div class="d-flex flex-row-reverse">
+            {% bootstrap_button button_type="submit" content="작성" %}
+        </div>
+    </form>
+</div>
+
+{% endblock %}
