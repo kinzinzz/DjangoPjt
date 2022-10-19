@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load django_bootstrap5 %}
+<div class="container">
+    <div>
+        <h3>"{{ query }}" 에 대한 검색결과</h3>
+    </div>
+
+    <table class="table text-center">
+        <thead>
+            <tr>
+                <th scope="col">pk</th>
+                <th scope="col">아이디</th>
+                <th scope="col">이름</th>
+                <th scope="col">이메일</th>
+            </tr>
+        </thead>
+        {% if users %}
+        {% if query == "" %}
+        <h4>검색어를 입력해주세요.</h4>
+        {% else %}
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.pk }}</td>
+                {% if user.username == request.user.username %}
+                <td><a href="{% url 'accounts:detail' user.pk %}">{{ user.username }}</a></td>
+                {% else %}
+                <td>{{ user.username }}</td>
+                {% endif %}
+                <td>{{ user.last_name }}{{ user.first_name }}</td>
+                <td>{{ user.email }}</td>
+            </tr>
+        </tbody>
+        {% endfor %}
+        {% endif %}
+        {% else %}
+        <h4>검색결과가 없습니다.</h4>
+
+        {% endif %}
+    </table>
+
+    {% endblock%}
