@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load django_bootstrap5 %}
+
+<div class="container">
+    <div class="container">
+
+        <h2>{{ review.title }}</h2>
+        <div class="text-success">
+            <hr>
+        </div>
+        <h5>{{ review.movie_name }}</h5>
+        <p>작성자{{ review.UserID_id }}</p>
+        <p>리뷰 내용:{{ review.content }}</p>
+        <p>영화 평점:{{ review.grade }}</p>
+        <p>작성시간: {{ review.created_at }}</p>
+        <p>수정시간: {{ review.updated_at }}</p>
+    </div>
+    {% if request.user.id == review.UserID_id %}
+    <div class="d-flex d-flex justify-content-end">
+        <div class="row gx-1">
+            <div class="col">
+                <a href="{% url 'reviews:update' review.pk %}">
+                    <div class="">
+                        {% bootstrap_button button_type="submit" content="수정" %}
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="{% url 'reviews:delete' review.pk  %}" onclick="return confirm('정말 삭제 하시겠습니까?')">
+                    <div class="">
+                        {% bootstrap_button button_type="submit" content="삭제" %}
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+
+    </div>
+</div>
+{% else %}
+{% endif %}
+</div>
+<hr>
+<div class="container">
+    {% for comment in review.comments.all %}
+    {% if user.is_authenticated or comment.approved_comment %}
+    <div class="comment">
+        <div class="editcoomment">
+            {{ comment.created_at }}
+            {% if comment.modify_date %}
+            수정:{{ comment.modify_date }}
+            {% endif %}
+
+            <!-- {% if not comment.approved_comment %}
+            <a href="{% url 'reviews:comment_remove' comment.pk %}">댓글 삭제</a>
+            {% endif %} -->
+            {% if request.user.id == comment.user_id %}
+            <a href="{% url 'reviews:comment_remove' comment.pk %}">댓글 삭제</a>
+            <a href="{% url 'reviews:comment_modify' comment.pk %}">댓글 수정</a>
+            {% endif %}
+
+        </div>
+
+        <h4>{{ comment.user }}</h4>
+        <p> {{ comment.text|linebreaks }}</p>
+    </div>
+    {% endif %}
+    {% empty %}
+    <p>아직 댓글이 없습니다.</p>
+    {% endfor %}
+    {% if user.is_authenticated %}
+
+    <a href="{% url 'reviews:add_comment' review.pk %}">댓글 추가</a>
+    {% else %}
+    <a href="{% url 'accounts:login' %}">로그인 후 댓글 쓰기</a>
+    {% endif %}
+</div>
+{% endblock %}
