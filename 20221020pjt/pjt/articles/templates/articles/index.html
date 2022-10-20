@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load django_bootstrap5 %}
+<!-- message 표시 -->
+{% if messages %}
+<div class="alert alert-danger my-3" role="alert">
+    {% for message in messages %}
+    <strong>{{ message.tags }}</strong>
+    <ul>
+        <li>{{ message.message }}</li>
+    </ul>
+    {% endfor %}
+</div>
+{% endif %}
+<div class="container">
+    <table class="table text-center">
+        <thead>
+            <tr>
+                <th scope="col">게시글</th>
+                <th scope="col">작성자</th>
+                <th scope="col">댓글수</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for article in articles %}
+            <tr>
+                <td><a href="{% url 'articles:article_detail' article.pk %}">{{ article.title }}</a></td>
+
+                <td><a href="{% url 'accounts:user_detail' article.user.pk %}">{{ article.user }}</a></td>
+                {% if article.comments.all %}
+                <td>{{ article.comments.all|length }}개의 댓글이 있습니다.</td>
+                {% else %}
+                <td>댓글이 없습니다.</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+    {% if request.user.is_authenticated %}
+    <div class="d-flex justify-content-between">
+        <a href="{% url 'accounts:logout' %}">{% bootstrap_button button_type="submit" content="로그아웃" %}</a>
+        <a href="{% url 'articles:create' %}">{% bootstrap_button button_type="submit" content="글작성" %}</a>
+    </div>
+    {% else %}
+    <div class="d-flex">
+        <a href="{% url 'accounts:login' %}" class="mx-2">{% bootstrap_button button_type="submit" content="로그인" %}</a>
+        <a href="{% url 'accounts:signup' %}">{% bootstrap_button button_type="submit" content="회원가입" %}</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

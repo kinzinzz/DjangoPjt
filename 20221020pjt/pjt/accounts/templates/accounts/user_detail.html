@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load django_bootstrap5 %}
+
+<div class="container">
+    <h2>{{ user.username }}님이 작성한 게시글과 댓글</h2>
+    <table class="table text-center">
+        <thead>
+            <tr>
+                <th scope="col">게시글</th>
+
+        </thead>
+        <tbody>
+            {% if user.articles.all %}
+            {% for article in user.articles.all %}
+            <tr>
+                <td><a href="{% url 'articles:article_detail' article.pk %}">{{ article.title }}</a></td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td>아직 작성한 게시글이 없습니다.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <table class="table text-center mt-5">
+        <thead>
+            <tr>
+                <th scope="col">댓글</th>
+
+        </thead>
+        <tbody>
+            {% if user.comments.all %}
+            {% for comment in user.comments.all %}
+            <tr>
+                <td>{{ comment.content }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td>아직 작성한 댓글이 없습니다.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-end">
+        <a href="/">{% bootstrap_button button_type="submit" content="홈페이지" %}</a>
+    </div>
+</div>
+{% endblock %}
