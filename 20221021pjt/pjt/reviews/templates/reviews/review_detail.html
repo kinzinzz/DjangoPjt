@@ -39,7 +39,8 @@
                 </a>
             </div>
             <div class="">
-                <a href="{% url 'reviews:comment_delete' review.pk comment.pk %}">
+                <a href="{% url 'reviews:comment_delete' review.pk comment.pk %}"
+                    onclick="return confirm('정말 삭제하시겠습니까?')">
                     {% bootstrap_button button_type="submit" content="댓글삭제" %}
                 </a>
             </div>
@@ -58,10 +59,13 @@
                 {% bootstrap_button button_type="submit" content="댓글작성" %}
             </a>
         </div>
-        {% if request.user.is_authenticated %}
-        <div class="me-1">
-            <a href="{% url 'reviews:review_update' review.pk %}">
-                {% bootstrap_button button_type="submit" content="글수정" %}
+        {% if request.user == review.user %}
+        <div class="d-flex justify-content-end">
+            <a href="{% url 'reviews:review_update' review.pk %}" class="me-1">
+                {% bootstrap_button button_type="submit" content="리뷰수정" %}
+            </a>
+            <a href="{% url 'reviews:review_delete' review.pk %}" class="me-1" onclick="return confirm('정말 삭제하시겠습니까?')">
+                {% bootstrap_button button_type="submit" content="리뷰삭제" %}
             </a>
         </div>
         {% endif %}

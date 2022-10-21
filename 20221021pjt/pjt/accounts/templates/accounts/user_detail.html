@@ -2,6 +2,7 @@
 {% block content %}
 {% load django_bootstrap5 %}
 <div class="container">
+    <h2>{{ request.user }}님의 작성한 리뷰</h2>
     <table class="table text-center">
         <thead>
             <tr>
@@ -31,17 +32,20 @@
     </table>
 </div>
 <div class="container mt-5">
+    <h2>{{ request.user }}님의 작성한 댓글</h2>
     <table class="table text-center">
         <thead>
             <tr>
                 <th scope="col">댓글</th>
+                <th scope="col">댓글작성한 리뷰</th>
             </tr>
         </thead>
         <tbody>
             {% if user.comments.all %}
             {% for comment in user.comments.all %}
             <tr>
-                <td>{{ comment.content }}</td>
+                <td>{{ comment.content }}</a></td>
+                <td><a href="{% url 'reviews:review_detail' comment.review.pk %}">{{ comment.review.title }}</a></td>
             </tr>
             {% endfor %}
             {% else %}
@@ -51,16 +55,24 @@
             {% endif %}
         </tbody>
     </table>
-    {% if request.user == user %}
+
     <div class="d-flex justify-content-end mt-5">
+        {% if request.user == user %}
         <a href="{% url 'accounts:user_update' user.pk  %}" class="mx-1">
             {% bootstrap_button button_type="submit" content="회원정보수정" %}
         </a>
+        <a href="{% url 'accounts:password_change' user.pk  %}" class="me-1">
+            {% bootstrap_button button_type="submit" content="비밀번호변경" %}
+        </a>
+        <a href="{% url 'accounts:delete' user.pk  %}" class="me-1" onclick="return confirm('정말 탈퇴하시겠습니까?')">
+            {% bootstrap_button button_type="submit" content="회원탈퇴" %}
+        </a>
+        {% endif %}
         <a href="{% url 'reviews:index' %}">
             {% bootstrap_button button_type="submit" content="게시판" %}
         </a>
     </div>
-    {% endif %}
+
 
 </div>
 

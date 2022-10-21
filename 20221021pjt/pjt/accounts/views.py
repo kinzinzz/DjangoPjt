@@ -2,8 +2,8 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as user_login
 from django.contrib.auth import logout as user_logout
-from django.contrib.auth import authenticate
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, update_session_auth_hash
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from .forms import CustomUserCreatrionForm, CustomUserChangeForm
 from django.contrib.auth.decorators import login_required
 from .models import User
@@ -59,15 +59,14 @@ def logout(request):
     return redirect('/')
 
 # 프로필
-@login_required
+@login_required(login_url='accounts:login')
 def user_detail(request, user_pk):
     user = User.objects.get(pk=user_pk)
     if request.user != user:
         messages.error(request, '권한이 없습니다.')
         
         return redirect('/')
-  
-
+      
     context = {
         'user':user,
     }
@@ -75,27 +74,67 @@ def user_detail(request, user_pk):
 
 
 # 회원정보 수정
-@login_required(login_url='common:login')
+@login_required(login_url='accounts:login')
 def user_update(request, user_pk):
     user = User.objects.get(pk=user_pk)
-
     if request.user != user:
         messages.error(request, '권한이 없습니다.')
-       
-        return redirect('accounts:user_detail', user_pk)
-
+        
+        return redirect('/')
     if request.method == 'POST':
-        update_form = CustomUserChangeForm(request.POST, data=request.user)
+        update_form = CustomUserChangeForm(request.POST, instance=request.user)
         if update_form.is_valid():
             update_form.save()
             
-            return redirect('acconts:user_detail', user_pk)
+            return redirect('accounts:user_detail', user_pk)
 
     else: 
-        update_form = CustomUserChangeForm(data=request.user)
+        update_form = CustomUserChangeForm(instance=request.user)
 
     context = {
         'update_form':update_form,
     }
 
     return render(request, 'accounts/user_update.html', context)
+    
+# 비밀번호 변경
+@login_required(login_url='accounts:login')
+def password_change(request, user_pk):
+
+    user = User.objects.get(pk=user_pk)
+    if request.user != user:
+        messages.error(request, '권한이 없습니다.')
+        
+        return redirect('/')
+    
+    if request.method == 'POST':
+        password_form = PasswordChangeForm(request.user, request.POST)
+        if password_form.is_valid():
+            password_form.save()
+            update_session_auth_hash(request, request.user)
+
+            return redirect('accounts:user_detail', user_pk)
+
+    else:
+        
+        password_form = PasswordChangeForm(request.user)
+
+    context = {
+        'password_form':password_form,
+    }
+    return render(request, 'accounts/password_change.html', context)
+
+
+@login_required(login_url='accounts:login')
+def delete(request, user_pk):
+
+    user = User.objects.get(pk=user_pk)
+    if request.user != user:
+        messages.error(request, '권한이 없습니다.')
+        
+        return redirect('/')
+    
+    user.delete()
+    user_logout(request)
+    
+    return redirect('/')

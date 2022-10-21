@@ -54,7 +54,7 @@ def review_detail(request, review_pk):
     return render(request, 'reviews/review_detail.html', context)
 
 # 리뷰 수정(리뷰 작성자만 수정)
-@login_required(login_url='common:login')
+@login_required(login_url='accounts:login')
 def review_update(request, review_pk):
 
     review = Review.objects.get(pk=review_pk)
@@ -80,7 +80,7 @@ def review_update(request, review_pk):
 
 
 # 리뷰 삭제(리뷰 작성자만 수정)
-@login_required(login_url='common:login')
+@login_required(login_url='accounts:login')
 def review_delete(request, review_pk):
     review = Review.objects.get(pk=review_pk)
         
@@ -117,7 +117,7 @@ def comment_add(request, review_pk):
     return render(request, 'reviews/comment_add.html', context)
 
 # 코멘트 삭제(코멘트 작성자만 수정)
-@login_required(login_url='common:login')
+@login_required(login_url='accounts:login')
 def comment_delete(request, review_pk, comment_pk):
    
     comment = Comment.objects.get(pk=comment_pk)
@@ -130,7 +130,7 @@ def comment_delete(request, review_pk, comment_pk):
     return redirect('reviews:review_detail', review_pk)
 
 # 코멘트 수정(코멘트 작성자만 수정)
-@login_required(login_url='common:login')
+@login_required(login_url='accounts:login')
 def comment_update(request, review_pk, comment_pk):
    
     comment = Comment.objects.get(pk=comment_pk)
