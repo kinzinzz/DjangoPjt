@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load django_bootstrap5 %}
+<div class="container">
+    <table class="table text-center">
+        <thead>
+            <tr>
+                <th scope="col">pk</th>
+                <th scope="col">게시글</th>
+                <th scope="col">영화제목</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% if user.reviews.all %}
+            {% for review in user.reviews.all %}
+            <tr>
+                <td>{{ review.pk }}</td>
+                <td><a href="{% url 'reviews:review_detail' review.pk %}">{{ review.title }}</a></td>
+                <td>{{ review.movie_name }}</td>
+            </tr>
+            {% endfor%}
+            {% else %}
+            <tr>
+                <td></td>
+                <td>아직 작성한 리뷰가 없습니다.</td>
+                <td></td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+<div class="container mt-5">
+    <table class="table text-center">
+        <thead>
+            <tr>
+                <th scope="col">댓글</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if user.comments.all %}
+            {% for comment in user.comments.all %}
+            <tr>
+                <td>{{ comment.content }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td>아직 작성한 댓글이 없습니다.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    {% if request.user == user %}
+    <div class="d-flex justify-content-end mt-5">
+        <a href="{% url 'accounts:user_update' user.pk  %}" class="mx-1">
+            {% bootstrap_button button_type="submit" content="회원정보수정" %}
+        </a>
+        <a href="{% url 'reviews:index' %}">
+            {% bootstrap_button button_type="submit" content="게시판" %}
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

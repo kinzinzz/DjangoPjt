@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load django_bootstrap5 %}
+{% if messages %}
+<div class="alert alert-danger my-3" role="alert">
+    {% for message in messages %}
+    <strong>{{ message.tags }}</strong>
+    <ul>
+        <li>{{ message.message }}</li>
+    </ul>
+    {% endfor %}
+</div>
+{% endif %}
+
+
+<div class="container">
+    <h2>{{ review.title }}</h2>
+    <h5>영화제목: {{ review.movie_name }}</h5>
+    <h6>영화 평점: {{ review.grade }}</h6>
+    <hr>
+    <p>{{ review.content }}</p>
+    <div class="d-flex justify-content-end">
+        <span>{{ review.user }} {{ review.created_at }}</span>
+    </div>
+    <hr>
+
+
+</div>
+<div class="container">
+    {% if review.comments.all %}
+    {% for comment in review.comments.all %}
+    <div class="d-flex justify-content-between">
+        {{ comment.user }}: {{ comment.content }}
+        {% if request.user == comment.user %}
+        <div class="d-flex justify-content-end">
+            <div class="mx-1">
+                <a href="{% url 'reviews:comment_update' review.pk comment.pk %}">
+                    {% bootstrap_button button_type="submit" content="댓글수정" %}
+                </a>
+            </div>
+            <div class="">
+                <a href="{% url 'reviews:comment_delete' review.pk comment.pk %}">
+                    {% bootstrap_button button_type="submit" content="댓글삭제" %}
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <br>
+    {% endfor %}
+
+    {% else %}
+    <span>아직 댓글이 없습니다.</span>
+    {% endif %}
+    <div class="d-flex justify-content-end">
+        <div class="mx-1">
+            <a href="{% url 'reviews:comment_add' review.pk %}">
+                {% bootstrap_button button_type="submit" content="댓글작성" %}
+            </a>
+        </div>
+        {% if request.user.is_authenticated %}
+        <div class="me-1">
+            <a href="{% url 'reviews:review_update' review.pk %}">
+                {% bootstrap_button button_type="submit" content="글수정" %}
+            </a>
+        </div>
+        {% endif %}
+        <div><a href="/">
+                {% bootstrap_button button_type="submit" content="게시판" %}
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
