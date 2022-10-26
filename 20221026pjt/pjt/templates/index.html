@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load django_bootstrap5 %}
+
+<h1>index.html 입니다.</h1>
+
+<div class="container">
+    {% for article in articles %}
+    <div class="articles-body">
+        <h2>{{ article.title }}</h2>
+        <p>{{ article.content }}</p>
+    </div>
+    <hr>
+
+    <div class="comments">
+        {% for comment in article.comments %}
+        <div>
+            {{ comment.id }}&nbsp{{ comment.content }}
+        </div>
+        {% endfor %}
+    </div>
+
+
+
+    <form id="add-Comment" data-article-id="{{ article.id }}">
+        {% csrf_token %}
+        {{ comment_form }}
+        <input type="submit" value="댓글작성">
+    </form>
+
+    {% endfor %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    const addComment = document.querySelector('#add-Comment')
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    addComment.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        axios(
+            {
+                method: 'POST',
+                url: `/articles/${event.target.dataset.articleId}/comment_create/`,
+                headers: { 'X-CSRFToken': csrftoken },
+                data: new FormData(addComment)
+            }
+
+        )
+            .then(response => {
+                const comments = document.querySelector(".comments")
+                const div = document.createElement('div')
+                div.innerText = `${response.data.id} | ${response.data.content}`
+                comments.append(div)
+                addComment.reset()
+            })
+    })
+</script>
+{% endblock %}
