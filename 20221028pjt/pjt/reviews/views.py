@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 
 # 데이터 목록 조회
 def index(request):
@@ -138,3 +139,20 @@ def comments_delete(request, review_pk, comment_pk):
 
     comment.delete()
     return redirect("reviews:detail", review_pk)
+
+# 게시글 검색
+def search(request):
+
+    if 'kw' in request.GET:
+        query = request.GET.get('kw')
+        reviews = Review.objects.all().filter(
+            Q(title__icontains = query)
+            
+        )
+    
+    context = {
+        'query': query,
+        'reviews':reviews,
+    }
+
+    return render(request, 'reviews/search.html', context)

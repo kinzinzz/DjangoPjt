@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 
+
 # 회원가입
 def signup(request):
 
@@ -153,3 +154,4 @@ def follow(request, user_pk):
         print(user.followings.all())
         print(user.follower.all())
         return JsonResponse(context)
+

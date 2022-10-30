@@ -14,6 +14,7 @@ followBtn.addEventListener('click', function (event) {
             follow.setAttribute('class', 'mt-2 mx-1')
             follower.innerText = '팔로워: ' + response.data.userFollowings
             follow.innerText = '팔로우: ' + response.data.userFollowers
+            alert('자신은 팔로잉 할 수 없습니다.')
         }
         else if (response.data.exited_user) {
             followBtn.innerText = '팔로우 취소'

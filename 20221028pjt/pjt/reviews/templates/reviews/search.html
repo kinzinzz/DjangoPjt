@@ -2,10 +2,10 @@
 {% load static %}
 {% block content %}
 {% load django_bootstrap5 %}
-
 <!-- 테이블 폼 -->
 <div class="container mt-5">
-    <table class="table text-center">
+    <h1 class="mt-5">'{{ query }}'의 검색결과</h1>
+    <table class="table text-center mt-5">
         <thead>
             <tr>
                 <th scope="col">번호</th>
@@ -32,9 +32,9 @@
     </table>
 
     <!-- 페이징 처리  -->
-    <ul class="pagination justify-content-center">
-        <!-- 이전 페이지 -->
-        {% if reviews.has_previous %}
+    <!-- <ul class="pagination justify-content-center"> -->
+    <!-- 이전 페이지 -->
+    <!-- {% if reviews.has_previous %}
         <li>
             <a class="page-link" tabindex="-1" href="?page={{ reviews.previous_page_number }}">이전</a>
         </li>
@@ -42,47 +42,39 @@
         <li>
             <a class="page-link" href="#">이전</a>
         </li>
-        {% endif %}
-        <!-- 페이지 리스트 -->
-        {% for page_number in reviews.paginator.page_range %}
+        {% endif %} -->
+    <!-- 페이지 리스트 -->
+    <!-- {# for page_number in reviews.paginator.page_range #}
         {# if page_number >= reviews.number|add:-5 and reviews.number >= page_number|add:5 #}
-        {% if page_number == reviews.number %}
+        {# if page_number == question_list.number #}
         <li class="page-item active" aria-current="page">
             <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
         </li>
-        {% else %}
+        {# else #}
         <li class="page-item">
             <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
         </li>
-        {% endif %}
         {# endif #}
-        {% endfor %}
-        <!-- 다음 페이지 -->
-        {% if reviews.has_next %}
+        {# endif #}
+        {# endfor #} -->
+    <!-- 다음 페이지 -->
+    <!-- {# if reviews.has_next #}
         <li class="page-item">
             <a class="page-link" href="?page={{ reviews.next_page_number }}">다음</a>
         </li>
-        {% else %}
+        {# else #}
         <li class="page-item disabled">
             <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
         </li>
-        {% endif %}
+        {# endif #}
     </ul>
-    <div class="container d-flex justify-content-between">
-        <div>
-            <a href="{% url 'reviews:create' %}">
-                <button type="submit" class="btn btn-outline-secondary mx-1">
-                    리뷰작성
-                </button>
-            </a>
-        </div>
-        <div class="search">
-            <form class="d-flex" action="{% url 'reviews:search' %}" role="search">
-                <input class="form-control me-1" type="search" placeholder="제목 검색" name="kw">
-                <button class="btn btn-outline-secondary" type="submit" style="width: 8rem;">검색</button>
-            </form>
-        </div>
-    </div>
+    <div class="">
+        <a href="{#url 'reviews:create' #}">
+            <button type="submit" class="btn btn-outline-secondary mx-1">
+                리뷰작성
+            </button>
+        </a>
+    </div> -->
 </div>
 
 {% endblock %}

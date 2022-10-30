@@ -17,6 +17,8 @@ urlpatterns = [
     path("<int:review_pk>/delete/", views.delete, name="delete"),
     # 게시물 좋아요
     path("<int:review_pk>/like/", views.like, name="like"),
+    # 게시물 '제목'검색
+    path('search/', views.search, name='search'),
     # 댓글
     # 댓글 작성
     path(
