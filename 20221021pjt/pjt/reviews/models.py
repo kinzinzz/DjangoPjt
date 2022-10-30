@@ -21,3 +21,7 @@ class Comment(models.Model):
     review = models.ForeignKey(Review, related_name="comments", on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), related_name="comments", on_delete=models.CASCADE)
     content = models.CharField(max_length=100)
+
+
+# 좋아요
+

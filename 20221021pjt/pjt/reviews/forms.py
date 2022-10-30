@@ -1,6 +1,7 @@
 from .models import Review, Comment
 from django import forms
 
+
 class ReviewForm(forms.ModelForm):
 
     class Meta:
@@ -12,9 +13,10 @@ class ReviewForm(forms.ModelForm):
             'grade',           
         ]
 class CommentForm(forms.ModelForm):
-
     class Meta:
         model = Comment
         fields = [
             'content',
         ]
+
+        

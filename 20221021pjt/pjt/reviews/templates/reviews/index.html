@@ -25,12 +25,12 @@
         <tbody>
             {% for review in reviews %}
             <tr>
-                <td>{{ review.pk }}</td>
+                <td>{{ review.id }}</td>
                 <td>{{ review.movie_name }}</td>
-                <td><a href="{% url 'reviews:review_detail' review.pk%}">{{ review.title }}</a></td>
-                <td><a href="{% url 'accounts:user_detail' review.user.pk %}">{{ review.user }}</a></td>
-                {% if review.comments.all %}
-                <td>{{ review.comments.all |length }}개의 댓글이 있습니다.</td>
+                <td><a href="{% url 'reviews:review_detail' review.id %}">{{ review.title }}</a></td>
+                <td><a href="{% url 'accounts:user_detail' review.user.id %}">{{ review.user.username }}</a></td>
+                {% if review.comments %}
+                <td>{{ review.comments |length }}개의 댓글이 있습니다.</td>
                 {% else %}
                 <td>아직 댓글이 없습니다.</td>
                 {% endif %}

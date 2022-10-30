@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+<!-- 권한제한 메시지 -->
+{% if messages %}
+<div class="alert alert-danger my-3" role="alert">
+    {% for message in messages %}
+    <strong>{{ message.tags }}</strong>
+    <ul>
+        <li>{{ message.message }}</li>
+    </ul>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="container mt-5">
+
+    <div class="user_info d-flex justify-content-between">
+        <!-- 팔로우 -->
+        <div class="d-flex justify-content-start">
+
+            <h3 class="mx-1">{{user.username}}</h3>
+            <span id="follower" class="mt-2 mx-1">팔로워: {{ user.followings.all | length}}</span>
+            <span id="follow" class="mt-2 mx-1">팔로우: {{ user.follower.all | length}}</span>
+            <!-- <a href="{% url 'accounts:follow' user.pk %}"> -->
+            {% if request.user in user.followings.all %}
+            <button id="follow-btn" data-user-id="{{ user.id }}" type="button"
+                class="btn btn-outline-secondary mx-1">팔로우 취소
+            </button>
+            {% else %}
+            <button id="follow-btn" data-user-id="{{ user.id }}" type="button"
+                class="btn btn-outline-secondary mx-1">팔로우
+            </button>
+            {% endif %}
+            <!-- </a> -->
+        </div>
+        <!-- 사용자 정보 변경-->
+        <div class="d-flex justify-content-end">
+
+            {% if request.user == user %}
+            <a href="{% url 'accounts:profile_change' user.pk %}">
+                <button type="button" class="btn btn-outline-secondary mx-1">프로필 수정</button>
+            </a>
+            <a href="{% url 'accounts:password_change' user.pk %}">
+                <button type="button" class="btn btn-outline-secondary mx-1">비밀번호 변경</button>
+            </a>
+            <a href="">
+                <button type="button" class="btn btn-outline-secondary mx-1" onclick="return confirm('탈퇴 하시겠습니까?')">
+                    회원탈퇴
+                </button>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    <hr>
+
+    <!-- 사용자 리뷰 테이블 -->
+    <h3>{{ user.username }}님이 작성한 리뷰</h3>
+    <div class="container mt-5">
+        <table class="table text-center">
+            <thead>
+                <tr>
+                    <th scope="col">번호</th>
+                    <th scope="col">제목</th>
+                    <th scope="col">댓글수</th>
+                    <th scope="col">작성일자</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if user.reviews %}
+                {% for review in user.reviews.all %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><a href="{% url 'reviews:detail' review.pk %}">{{ review.title }}</a></td>
+                    <td>{{ review.comments.all | length }}</td>
+                    <td>{{ review.created_at }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <td colspan="4">작성한 리뷰가 없습니다.</td>
+                {% endif %}
+        </table>
+
+        <!-- 사용자 댓글 테이블 -->
+        <h3 class="mt-5">{{ user.username }}님이 작성한 댓글</h3>
+        <div class="container mt-5">
+            <table class="table text-center">
+                <thead>
+                    <tr>
+                        <th scope="col">번호</th>
+                        <th scope="col">댓글내용</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if user.comments %}
+                    {% for comment in user.comments.all %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="{% url 'reviews:detail' comment.review.pk %}">{{ comment.content }}</a></td>
+
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <td colspan="2">작성한 댓글이 없습니다.</td>
+                    {% endif %}
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

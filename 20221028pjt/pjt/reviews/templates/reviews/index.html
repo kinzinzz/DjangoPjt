@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% load django_bootstrap5 %}
+
+<!-- 테이블 폼 -->
+<div class="container mt-5">
+    <table class="table text-center">
+        <thead>
+            <tr>
+                <th scope="col">번호</th>
+                <th scope="col">제목</th>
+                <th scope="col">작성자</th>
+                <th scope="col">댓글수</th>
+                <th scope="col">작성일자</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if reviews %}
+            {% for review in reviews %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><a href="{% url 'reviews:detail' review.pk %}">{{ review.title }}</a></td>
+                <td><a href="{% url 'accounts:user_detail' review.author.pk %}">{{ review.author }}</a></td>
+                <td>{{ review.comments.all | length }}</td>
+                <td>{{ review.created_at }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <td colspan="3">리뷰가 없습니다.</td>
+            {% endif %}
+    </table>
+
+    <!-- 페이징 처리  -->
+    <ul class="pagination justify-content-center">
+        <!-- 이전 페이지 -->
+        {% if reviews.has_previous %}
+        <li>
+            <a class="page-link" tabindex="-1" href="?page={{ reviews.previous_page_number }}">이전</a>
+        </li>
+        {% else %}
+        <li>
+            <a class="page-link" href="#">이전</a>
+        </li>
+        {% endif %}
+        <!-- 페이지 리스트 -->
+        {% for page_number in reviews.paginator.page_range %}
+        {# if page_number >= reviews.number|add:-5 and reviews.number >= page_number|add:5 #}
+        {% if page_number == question_list.number %}
+        <li class="page-item active" aria-current="page">
+            <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+        </li>
+        {% else %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+        </li>
+        {# endif #}
+        {% endif %}
+        {% endfor %}
+        <!-- 다음 페이지 -->
+        {% if reviews.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ reviews.next_page_number }}">다음</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+        </li>
+        {% endif %}
+    </ul>
+    <div class="">
+        <a href="{% url 'reviews:create' %}">
+            <button type="submit" class="btn btn-outline-secondary mx-1">
+                리뷰작성
+            </button>
+        </a>
+    </div>
+</div>
+
+{% endblock %}

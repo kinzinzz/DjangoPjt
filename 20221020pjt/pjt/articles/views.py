@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from .models import Article, Comment
 from .forms import ArticleForm, CommentForm
 from .models import Article
-from accounts.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 

@@ -20,60 +20,116 @@
     <hr>
     <p>{{ review.content }}</p>
     <div class="d-flex justify-content-end">
-        <span>{{ review.user }} {{ review.created_at }}</span>
+        <span>작성자: {{ review.user.username }}</span>
     </div>
     <hr>
-
-
 </div>
 <div class="container">
-    {% if review.comments.all %}
-    {% for comment in review.comments.all %}
-    <div class="d-flex justify-content-between">
-        {{ comment.user }}: {{ comment.content }}
-        {% if request.user == comment.user %}
-        <div class="d-flex justify-content-end">
-            <div class="mx-1">
-                <a href="{% url 'reviews:comment_update' review.pk comment.pk %}">
-                    {% bootstrap_button button_type="submit" content="댓글수정" %}
-                </a>
-            </div>
-            <div class="">
-                <a href="{% url 'reviews:comment_delete' review.pk comment.pk %}"
-                    onclick="return confirm('정말 삭제하시겠습니까?')">
-                    {% bootstrap_button button_type="submit" content="댓글삭제" %}
-                </a>
-            </div>
+
+    <div class="comments">
+        {% if review.comments.length == 1 %}
+        <div>
+            아직 댓글이 없습니다.
         </div>
-        {% endif %}
+        {% else %}
+        {% for comment in review.comments %}
+        <div class="temp">
+            {{ comment.user.username }}: {{ comment.content }}
+        </div>
+
+        <div class="comment-options">
+            <div class="comment_options d-flex justify-content-end">
+                {% if request.user.username == comment.user.username %}
+                <div class="mx-1">
+                    <a class="comment_update " href="{% url 'reviews:comment_update' review.id comment.id %}">
+                        {% bootstrap_button button_type="submit" content="댓글수정" %}
+                    </a>
+                </div>
+                <div class="">
+                    <a class="comment_delete" href="{% url 'reviews:comment_delete' review.id comment.id %}"
+                        onclick="return confirm('정말 삭제하시겠습니까?')">
+                        {% bootstrap_button button_type="submit" content="댓글삭제" %}
+                    </a>
+                </div>
+
+            </div>
+            {% endif %}
+        </div>
+
     </div>
-    <br>
     {% endfor %}
 
-    {% else %}
-    <span>아직 댓글이 없습니다.</span>
     {% endif %}
-    <div class="d-flex justify-content-end">
-        <div class="mx-1">
-            <a href="{% url 'reviews:comment_add' review.pk %}">
-                {% bootstrap_button button_type="submit" content="댓글작성" %}
-            </a>
-        </div>
-        {% if request.user == review.user %}
-        <div class="d-flex justify-content-end">
-            <a href="{% url 'reviews:review_update' review.pk %}" class="me-1">
-                {% bootstrap_button button_type="submit" content="리뷰수정" %}
-            </a>
-            <a href="{% url 'reviews:review_delete' review.pk %}" class="me-1" onclick="return confirm('정말 삭제하시겠습니까?')">
-                {% bootstrap_button button_type="submit" content="리뷰삭제" %}
-            </a>
-        </div>
-        {% endif %}
-        <div><a href="/">
-                {% bootstrap_button button_type="submit" content="게시판" %}
-            </a>
-        </div>
 
+</div>
+
+</div>
+</div>
+
+
+
+</div>
+<div class="mx-1">
+    <div class="container">
+        <form id="comment_form" data-review-id="{{ review.id }}">
+            {% csrf_token%}
+
+            {% bootstrap_form comment_form %}
+            {% bootstrap_button button_type="submit" content="댓글작성" %}
+        </form>
     </div>
 </div>
+{% if request.user.username == review.user.username %}
+
+<div class="d-flex justify-content-end">
+    <a href="{% url 'reviews:review_update' review.id %}" class="me-1">
+        {% bootstrap_button button_type="submit" content="리뷰수정" %}
+    </a>
+    <a href="{% url 'reviews:review_delete' review.id %}" class="me-1" onclick="return confirm('정말 삭제하시겠습니까?')">
+        {% bootstrap_button button_type="submit" content="리뷰삭제" %}
+    </a>
+    <a href="/">
+        {% bootstrap_button button_type="submit" content="게시판" %}
+    </a>
+
+</div>
+{% else %}
+<div class="d-flex justify-content-end"><a href=" /">
+        {% bootstrap_button button_type="submit" content="게시판" %}
+    </a>
+</div>
+{% endif %}
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    const commentForm = document.querySelector('#comment_form')
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+    commentForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        axios(
+            {
+                method: 'POST',
+                url: `/reviews/${event.target.dataset.reviewId}/comments/`,
+                headers: { 'X-CSRFToken': csrftoken },
+                data: new FormData(commentForm)
+            }
+        )
+            .then(response => {
+                const comments = document.querySelector(".comments")
+
+                const div = document.createElement('div')
+                div.innerText = `${response.data.user.username}: ${response.data.content}`
+
+                comments.append(div)
+                commentForm.reset()
+            })
+
+
+
+
+    })
+</script>
 {% endblock %}
